@@ -379,6 +379,7 @@ RB_HEAD(uv_timer_tree_s, uv_timer_s);
     UV_REQ_FIELDS                         \
   } close_req;                            \
   HANDLE child_stdio[3];                  \
+  uv_pipe_t* stdio_streams[3];            \
   int exit_signal;                        \
   DWORD spawn_errno;                      \
   HANDLE wait_handle;                     \

@@ -67,6 +67,9 @@ static void uv_process_init(uv_loop_t* loop, uv_process_t* handle) {
   handle->child_stdio[0] = INVALID_HANDLE_VALUE;
   handle->child_stdio[1] = INVALID_HANDLE_VALUE;
   handle->child_stdio[2] = INVALID_HANDLE_VALUE;
+  handle->stdio_streams[0] = NULL;
+  handle->stdio_streams[1] = NULL;
+  handle->stdio_streams[2] = NULL;
 
   uv_req_init(loop, (uv_req_t*)&handle->exit_req);
   handle->exit_req.type = UV_PROCESS_EXIT;
@@ -688,6 +691,7 @@ static void close_child_stdio(uv_process_t* process) {
 /* Called on main thread after a child process has exited. */
 void uv_process_proc_exit(uv_loop_t* loop, uv_process_t* handle) {
   DWORD exit_code;
+  int i;
 
   /* Unregister from process notification. */
   if (handle->wait_handle != INVALID_HANDLE_VALUE) {
@@ -704,6 +708,7 @@ void uv_process_proc_exit(uv_loop_t* loop, uv_process_t* handle) {
     /* Clean-up the process handle. */
     CloseHandle(handle->process_handle);
     handle->process_handle = INVALID_HANDLE_VALUE;
+
   } else {
     /* We probably left the child stdio handles open to report the error */
     /* asynchronously, so close them now. */
@@ -711,6 +716,20 @@ void uv_process_proc_exit(uv_loop_t* loop, uv_process_t* handle) {
 
     /* The process never even started in the first place. */
     exit_code = 127;
+  }
+
+  /* Explicitly close stdio pipes, if defined.
+   * This is needed in case the child process spawned a grandchild
+   * and the pipe handles were inherited (this happens by default).
+   * In this case, Windows will not break the pipe because there are
+   * still open client handles
+   */
+  for (i = 0; i < 3; i++) {
+    uv_pipe_t* pipe = handle->stdio_streams[i];
+    if (pipe) {
+      close_pipe(pipe, NULL, NULL);
+      handle->stdio_streams[i] = NULL;
+    }
   }
 
   /* Fire the exit callback. */
@@ -920,6 +939,11 @@ int uv_spawn(uv_loop_t* loop, uv_process_t* process,
     /* the user asynchronously. */
     application_path = application;
   }
+
+  /* Store pipes so that we can close them when the child exits */
+  process->stdio_streams[0] = options.stdin_stream;
+  process->stdio_streams[1] = options.stdout_stream;
+  process->stdio_streams[2] = options.stderr_stream;
 
   /* Create stdio pipes. */
   if (options.stdin_stream) {
