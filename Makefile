@@ -32,7 +32,7 @@ install:
 uninstall:
 	@$(WAF) uninstall
 
-test: all
+test: all node_modules/weak
 	$(PYTHON) tools/test.py --mode=release simple message
 
 test-http1: all
@@ -41,7 +41,16 @@ test-http1: all
 test-valgrind: all
 	$(PYTHON) tools/test.py --mode=release --valgrind simple message
 
-test-all: all
+node_modules/weak:
+	@if [ ! -f node ]; then make all; fi
+	@if [ ! -d node_modules ]; then mkdir -p node_modules; fi
+	./node deps/npm/bin/npm-cli.js install weak \
+		--prefix="$(shell pwd)" --unsafe-perm # go ahead and run as root.
+
+test-gc: all node_modules/weak
+	$(PYTHON) tools/test.py --mode=release gc
+
+test-all: all node_modules/weak
 	$(PYTHON) tools/test.py --mode=debug,release
 	make test-npm
 
@@ -100,6 +109,7 @@ website_files = \
 	out/doc/about/index.html \
 	out/doc/community/index.html \
 	out/doc/logos/index.html \
+	out/doc/changelog.html \
 	$(doc_images)
 
 doc: program $(apidoc_dirs) $(website_files) $(apiassets) $(apidocs) tools/doc/
@@ -109,6 +119,9 @@ $(apidoc_dirs):
 
 out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets/
 	cp $< $@
+
+out/doc/changelog.html: ChangeLog doc/changelog-head.html doc/changelog-foot.html tools/build-changelog.sh
+	bash tools/build-changelog.sh
 
 out/doc/%.html: doc/%.html
 	cat $< | sed -e 's|__VERSION__|'$(VERSION)'|g' > $@
@@ -127,7 +140,7 @@ email.md: ChangeLog tools/email-footer.md
 	cat tools/email-footer.md | sed -e 's|__VERSION__|'$(VERSION)'|g' >> $@
 
 blog.html: email.md
-	cat $< | node tools/doc/node_modules/.bin/marked > $@
+	cat $< | ./node tools/doc/node_modules/.bin/marked > $@
 
 website-upload: doc
 	rsync -r out/doc/ node@nodejs.org:~/web/nodejs.org/
@@ -149,6 +162,7 @@ clean:
 	$(WAF) clean
 	-find tools -name "*.pyc" | xargs rm -f
 	-rm -rf blog.html email.md
+	-rm -rf node_modules
 
 distclean: docclean
 	-find tools -name "*.pyc" | xargs rm -f
