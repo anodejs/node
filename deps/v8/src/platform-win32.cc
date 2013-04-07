@@ -1352,6 +1352,10 @@ int OS::StackWalk(Vector<OS::StackFrame> frames) {
   stack_frame.AddrPC.Offset = context.Rip;
   stack_frame.AddrFrame.Offset = context.Rbp;
   stack_frame.AddrStack.Offset = context.Rsp;
+#elif _M_ARM
+  stack_frame.AddrPC.Offset = context.Pc;
+  stack_frame.AddrFrame.Offset = context.R11;
+  stack_frame.AddrStack.Offset = context.Sp;
 #else
   stack_frame.AddrPC.Offset = context.Eip;
   stack_frame.AddrFrame.Offset = context.Ebp;
@@ -2079,6 +2083,10 @@ class SamplerThread : public Thread {
       sample->pc = reinterpret_cast<Address>(context.Rip);
       sample->sp = reinterpret_cast<Address>(context.Rsp);
       sample->fp = reinterpret_cast<Address>(context.Rbp);
+#elif _M_ARM
+      sample->pc = reinterpret_cast<Address>(context.Pc);
+      sample->sp = reinterpret_cast<Address>(context.Sp);
+      sample->fp = reinterpret_cast<Address>(context.R11);
 #else
       sample->pc = reinterpret_cast<Address>(context.Eip);
       sample->sp = reinterpret_cast<Address>(context.Esp);

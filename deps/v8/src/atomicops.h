@@ -116,7 +116,7 @@ Atomic32 Release_CompareAndSwap(volatile Atomic32* ptr,
                                 Atomic32 old_value,
                                 Atomic32 new_value);
 
-void MemoryBarrier();
+//void MemoryBarrier();
 void NoBarrier_Store(volatile Atomic32* ptr, Atomic32 value);
 void Acquire_Store(volatile Atomic32* ptr, Atomic32 value);
 void Release_Store(volatile Atomic32* ptr, Atomic32 value);
@@ -156,6 +156,9 @@ Atomic64 Release_Load(volatile const Atomic64* ptr);
 #elif defined(_MSC_VER) && \
   (defined(V8_HOST_ARCH_IA32) || defined(V8_HOST_ARCH_X64))
 #include "atomicops_internals_x86_msvc.h"
+#elif defined(_MSC_VER) && \
+  (defined(V8_TARGET_ARCH_ARM))
+#include "atomicops_internals_arm_msvc.h"
 #elif defined(__APPLE__) && \
   (defined(V8_HOST_ARCH_IA32) || defined(V8_HOST_ARCH_X64))
 #include "atomicops_internals_x86_macosx.h"

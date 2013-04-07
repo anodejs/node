@@ -58,6 +58,8 @@ enum AllocationFlags {
 // Invalid depth in prototype chain.
 const int kInvalidProtoDepth = -1;
 
+#define V8_TARGET_ARCH_ARM 1
+
 #if V8_TARGET_ARCH_IA32
 #include "assembler.h"
 #include "ia32/assembler-ia32.h"

@@ -15,7 +15,7 @@ if /i "%1"=="/?" goto help
 set config=Release
 set msiplatform=x86
 set target=Build
-set target_arch=ia32
+set target_arch=x64
 set debug_arg=
 set nosnapshot_arg=
 set noprojgen=
@@ -44,6 +44,7 @@ if /i "%1"=="clean"         set target=Clean&goto arg-ok
 if /i "%1"=="ia32"          set target_arch=ia32&goto arg-ok
 if /i "%1"=="x86"           set target_arch=ia32&goto arg-ok
 if /i "%1"=="x64"           set target_arch=x64&goto arg-ok
+if /i "%1"=="arm"           set target_arch=arm&goto arg-ok
 if /i "%1"=="noprojgen"     set noprojgen=1&goto arg-ok
 if /i "%1"=="nobuild"       set nobuild=1&goto arg-ok
 if /i "%1"=="nosign"        set nosign=1&goto arg-ok
@@ -62,6 +63,10 @@ if /i "%1"=="test"          set test=test&goto arg-ok
 if /i "%1"=="msi"           set msi=1&set licensertf=1&goto arg-ok
 if /i "%1"=="upload"        set upload=1&goto arg-ok
 if /i "%1"=="jslint"        set jslint=1&goto arg-ok
+if /i "%1"=="without_ssl"   set without_ssl=--without-ssl&goto arg-ok
+if /i "%1"=="without_snapshot"   set without_snapshot=--without-snapshot&goto arg-ok
+
+
 
 echo Warning: ignoring invalid command line option `%1`.
 
@@ -89,7 +94,7 @@ if defined NIGHTLY set TAG=nightly-%NIGHTLY%
 @rem Generate the VS project.
 SETLOCAL
   if defined VS100COMNTOOLS call "%VS100COMNTOOLS%\VCVarsQueryRegistry.bat"
-  python configure %debug_arg% %nosnapshot_arg% %noetw_arg% %noperfctr_arg% --dest-cpu=%target_arch% --tag=%TAG%
+  python configure %debug_arg% %nosnapshot_arg% %noetw_arg% %noperfctr_arg% --dest-cpu=%target_arch% --tag=%TAG% %without_ssl% %without_snapshot%
   if errorlevel 1 goto create-msvs-files-failed
   if not exist node.sln goto create-msvs-files-failed
   echo Project files generated.
