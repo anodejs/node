@@ -15,7 +15,7 @@ if /i "%1"=="/?" goto help
 set config=Release
 set msiplatform=x86
 set target=Build
-set target_arch=x64
+set target_arch=arm
 set debug_arg=
 set nosnapshot_arg=
 set noprojgen=

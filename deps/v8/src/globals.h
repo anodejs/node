@@ -66,8 +66,9 @@ namespace internal {
 //   http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 //   http://www.agner.org/optimize/calling_conventions.pdf
 //   or with gcc, run: "echo | gcc -E -dM -"
-#define V8_TARGET_ARCH_ARM 1
-#undef V8_TARGET_ARCH_X64
+
+//#define V8_TARGET_ARCH_ARM 1
+//#undef V8_TARGET_ARCH_X64
 
 #if defined(_M_X64) || defined(__x86_64__)
 #define V8_HOST_ARCH_X64 1
@@ -138,6 +139,9 @@ namespace internal {
 #define USE_SIMULATOR 1
 #endif
 #endif
+
+// (saary)
+#define USE_SIMULATOR 1 
 
 // Support for alternative bool type. This is only enabled if the code is
 // compiled with USE_MYBOOL defined. This catches some nasty type bugs.
