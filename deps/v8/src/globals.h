@@ -66,7 +66,7 @@ namespace internal {
 //   http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 //   http://www.agner.org/optimize/calling_conventions.pdf
 //   or with gcc, run: "echo | gcc -E -dM -"
-#define V8_HOST_ARCH_ARM 1
+#define V8_TARGET_ARCH_ARM 1
 #undef V8_TARGET_ARCH_X64
 
 #if defined(_M_X64) || defined(__x86_64__)
