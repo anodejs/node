@@ -64,6 +64,9 @@ void CPU::FlushICache(void* start, size_t size) {
   // None of this code ends up in the snapshot so there are no issues
   // around whether or not to generate the code when building snapshots.
   Simulator::FlushICache(Isolate::Current()->simulator_i_cache(), start, size);
+#elif defined(_MSC_VER)
+  HANDLE hProcess = GetCurrentProcess();
+  FlushInstructionCache(hProcess, start, size);
 #else
   // Ideally, we would call
   //   syscall(__ARM_NR_cacheflush, start,
@@ -75,7 +78,7 @@ void CPU::FlushICache(void* start, size_t size) {
   register uint32_t end asm("a2") =
       reinterpret_cast<uint32_t>(start) + size;
   register uint32_t flg asm("a3") = 0;
-  #if defined (__arm__) && !defined(__thumb__)
+  #if (defined(__arm__) || defined(_M_ARM)) && !(defined(__thumb__) || defined(_M_ARMT))
     // __arm__ may be defined in thumb mode.
     register uint32_t scno asm("r7") = __ARM_NR_cacheflush;
     asm volatile(
@@ -108,7 +111,9 @@ void CPU::FlushICache(void* start, size_t size) {
 
 
 void CPU::DebugBreak() {
-#if !defined (__arm__) || !defined(CAN_USE_ARMV5_INSTRUCTIONS)
+#if defined(_M_ARM)
+  __emit(0xDEFE);
+#elif !defined (__arm__) || !defined(CAN_USE_ARMV5_INSTRUCTIONS)
   UNIMPLEMENTED();  // when building ARM emulator target
 #else
   asm volatile("bkpt 0");

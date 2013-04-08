@@ -66,10 +66,6 @@ namespace internal {
 //   http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 //   http://www.agner.org/optimize/calling_conventions.pdf
 //   or with gcc, run: "echo | gcc -E -dM -"
-
-//#define V8_TARGET_ARCH_ARM 1
-//#undef V8_TARGET_ARCH_X64
-
 #if defined(_M_X64) || defined(__x86_64__)
 #define V8_HOST_ARCH_X64 1
 #define V8_HOST_ARCH_64_BIT 1
@@ -78,7 +74,7 @@ namespace internal {
 #define V8_HOST_ARCH_IA32 1
 #define V8_HOST_ARCH_32_BIT 1
 #define V8_HOST_CAN_READ_UNALIGNED 1
-#elif defined(__ARMEL__) || defined(_M_ARM_FP)
+#elif defined(__ARMEL__) || defined(_M_ARM)
 #define V8_HOST_ARCH_ARM 1
 #define V8_HOST_ARCH_32_BIT 1
 // Some CPU-OS combinations allow unaligned access on ARM. We assume
@@ -141,7 +137,8 @@ namespace internal {
 #endif
 
 // (saary)
-#define USE_SIMULATOR 1 
+//#define USE_SIMULATOR 1 
+//#undef USE_SIMULATOR
 
 // Support for alternative bool type. This is only enabled if the code is
 // compiled with USE_MYBOOL defined. This catches some nasty type bugs.
