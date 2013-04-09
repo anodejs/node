@@ -99,7 +99,7 @@ class Debugger;
 class DebuggerAgent;
 #endif
 
-#if !defined(__arm__) && defined(V8_TARGET_ARCH_ARM) || \
+#if !(defined(__arm__) || defined(_M_ARM)) && defined(V8_TARGET_ARCH_ARM) || \
     !defined(__mips__) && defined(V8_TARGET_ARCH_MIPS)
 class Redirection;
 class Simulator;
@@ -392,7 +392,7 @@ class Isolate {
           thread_id_(thread_id),
           stack_limit_(0),
           thread_state_(NULL),
-#if !defined(__arm__) && defined(V8_TARGET_ARCH_ARM) || \
+#if !(defined(__arm__) || defined(_M_ARM)) && defined(V8_TARGET_ARCH_ARM) || \
     !defined(__mips__) && defined(V8_TARGET_ARCH_MIPS)
           simulator_(NULL),
 #endif
@@ -405,7 +405,7 @@ class Isolate {
     ThreadState* thread_state() const { return thread_state_; }
     void set_thread_state(ThreadState* value) { thread_state_ = value; }
 
-#if !defined(__arm__) && defined(V8_TARGET_ARCH_ARM) || \
+#if !(defined(__arm__) || defined(_M_ARM)) && defined(V8_TARGET_ARCH_ARM) || \
     !defined(__mips__) && defined(V8_TARGET_ARCH_MIPS)
     Simulator* simulator() const { return simulator_; }
     void set_simulator(Simulator* simulator) {
@@ -423,7 +423,7 @@ class Isolate {
     uintptr_t stack_limit_;
     ThreadState* thread_state_;
 
-#if !defined(__arm__) && defined(V8_TARGET_ARCH_ARM) || \
+#if !(defined(__arm__) || defined(_M_ARM)) && defined(V8_TARGET_ARCH_ARM) || \
     !defined(__mips__) && defined(V8_TARGET_ARCH_MIPS)
     Simulator* simulator_;
 #endif
@@ -991,7 +991,7 @@ class Isolate {
   void SetAllowHandleDereference(bool allow);
 #endif
 
-#if defined(V8_TARGET_ARCH_ARM) && !defined(__arm__) || \
+#if defined(V8_TARGET_ARCH_ARM) && !(defined(__arm__) || defined(_M_ARM)) || \
     defined(V8_TARGET_ARCH_MIPS) && !defined(__mips__)
   bool simulator_initialized() { return simulator_initialized_; }
   void set_simulator_initialized(bool initialized) {
@@ -1291,7 +1291,7 @@ class Isolate {
   // Time stamp at initialization.
   double time_millis_at_init_;
 
-#if defined(V8_TARGET_ARCH_ARM) && !defined(__arm__) || \
+#if defined(V8_TARGET_ARCH_ARM) && !(defined(__arm__) || defined(_M_ARM)) || \
     defined(V8_TARGET_ARCH_MIPS) && !defined(__mips__)
   bool simulator_initialized_;
   HashMap* simulator_i_cache_;

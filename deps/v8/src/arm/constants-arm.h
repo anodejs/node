@@ -65,7 +65,7 @@
 #endif
 
 // Simulator should support ARM5 instructions and unaligned access by default.
-#if !defined(__arm__)
+#if !defined(__arm__) && !defined(_M_ARM)
 # define CAN_USE_ARMV5_INSTRUCTIONS 1
 # define CAN_USE_THUMB_INSTRUCTIONS 1
 

@@ -75,7 +75,7 @@ static unsigned CpuFeaturesImpliedByCompiler() {
   answer |= 1u << VFP32DREGS;
 #endif  // CAN_USE_VFP32DREGS
 
-#ifdef __arm__
+#if defined(__arm__) || defined(_M_ARM)
   // If the compiler is allowed to use VFP then we can use VFP too in our code
   // generation even when generating snapshots. ARMv7 and hardware floating
   // point support implies VFPv3, see ARM DDI 0406B, page A1-6.
@@ -127,7 +127,7 @@ void CpuFeatures::Probe() {
     return;
   }
 
-#ifndef __arm__
+#if !defined(__arm__) && !defined(_M_ARM)
   // For the simulator=arm build, use VFP when FLAG_enable_vfp3 is
   // enabled. VFPv3 implies ARMv7, see ARM DDI 0406B, page A1-6.
   if (FLAG_enable_vfp3) {
@@ -1602,7 +1602,7 @@ void Assembler::stm(BlockAddrMode am,
 // Stops with a non-negative code less than kNumOfWatchedStops support
 // enabling/disabling and a counter feature. See simulator-arm.h .
 void Assembler::stop(const char* msg, Condition cond, int32_t code) {
-#ifndef __arm__
+#if !defined(__arm__) && !defined(_M_ARM)
   ASSERT(code >= kDefaultStopCode);
   {
     // The Simulator will handle the stop instruction and get the message

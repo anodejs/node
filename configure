@@ -299,6 +299,7 @@ def cc_macros():
   """Checks predefined macros using the CC command."""
   k2 = {}
   k2['__ARM_ARCH_7__'] = True
+  k2['__ARM_NEON__'] = True
   return k2
    
   try:

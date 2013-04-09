@@ -53,9 +53,9 @@ bool CPU::SupportsCrankshaft() {
 
 void CPU::FlushICache(void* start, size_t size) {
   // Nothing to do flushing no instructions.
-  if (size == 0) {
-    return;
-  }
+  //if (size == 0) {
+  //  return;
+  //}
 
 #if defined (USE_SIMULATOR)
   // Not generating ARM instructions for C-code. This means that we are
@@ -66,7 +66,7 @@ void CPU::FlushICache(void* start, size_t size) {
   Simulator::FlushICache(Isolate::Current()->simulator_i_cache(), start, size);
 #elif defined(_MSC_VER)
   HANDLE hProcess = GetCurrentProcess();
-  FlushInstructionCache(hProcess, start, size);
+  BOOL result = FlushInstructionCache(hProcess, start, size);
 #else
   // Ideally, we would call
   //   syscall(__ARM_NR_cacheflush, start,

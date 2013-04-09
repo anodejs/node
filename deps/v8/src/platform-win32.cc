@@ -984,6 +984,37 @@ int OS::NumberOfCores() {
   return info.dwNumberOfProcessors;
 }
 
+// TODO: nadav: this will probably not work, perform a real check here 
+bool OS::ArmCpuHasFeature(CpuFeature feature) {
+const char* search_string = NULL;
+  // Simple detection of VFP at runtime for Linux.
+  // It is based on /proc/cpuinfo, which reveals hardware configuration
+  // to user-space applications.  According to ARM (mid 2009), no similar
+  // facility is universally available on the ARM architectures,
+  // so it's up to individual OSes to provide such.
+  switch (feature) {
+    case VFP2:
+	  return true;
+    case VFP3:
+	  return true;
+    case ARMv7:
+	  return true;
+    case SUDIV:
+	  return false;
+    case VFP32DREGS:
+	  return true;
+    default:
+      UNREACHABLE();
+  }
+
+  return false;
+}
+
+// TODO: nadav: perform a real check here?
+CpuImplementer OS::GetCpuImplementer() {
+  return ARM_IMPLEMENTER;
+}
+
 
 void OS::Abort() {
   if (IsDebuggerPresent() || FLAG_break_on_abort) {

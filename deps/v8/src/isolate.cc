@@ -1697,7 +1697,7 @@ Isolate::Isolate()
   thread_manager_ = new ThreadManager();
   thread_manager_->isolate_ = this;
 
-#if defined(V8_TARGET_ARCH_ARM) && !defined(__arm__) || \
+#if defined(V8_TARGET_ARCH_ARM) && !(defined(__arm__) || defined(_M_ARM)) || \
     defined(V8_TARGET_ARCH_MIPS) && !defined(__mips__)
   simulator_initialized_ = false;
   simulator_i_cache_ = NULL;

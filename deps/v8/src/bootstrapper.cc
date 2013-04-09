@@ -1400,6 +1400,7 @@ bool Genesis::CompileScriptCached(Isolate* isolate,
                      : top_context->global_object(),
                      isolate);
   bool has_pending_exception;
+  // (saary)
   Execution::Call(fun, receiver, 0, NULL, &has_pending_exception);
   if (has_pending_exception) return false;
   return true;
@@ -1771,6 +1772,7 @@ bool Genesis::InstallNatives() {
     // TODO(ager): We really only need to install the JS builtin
     // functions on the builtins object after compiling and running
     // runtime.js.
+	// (saary)
     if (!InstallJSBuiltins(builtins)) return false;
   }
 
