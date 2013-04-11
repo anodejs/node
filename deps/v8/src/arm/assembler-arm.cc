@@ -56,6 +56,11 @@ ExternalReference ExternalReference::cpu_features() {
   return ExternalReference(&CpuFeatures::supported_);
 }
 
+#ifdef _M_ARM // (saary)
+#define __VFP_FP__ 1
+#define CAN_USE_VFP32DREGS 1
+#endif
+
 // Get the CPU features enabled by the build. For cross compilation the
 // preprocessor symbols CAN_USE_ARMV7_INSTRUCTIONS and CAN_USE_VFP3_INSTRUCTIONS
 // can be defined to enable ARMv7 and VFPv3 instructions when building the

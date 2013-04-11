@@ -1536,7 +1536,8 @@ VirtualMemory::VirtualMemory(size_t size, size_t alignment)
   bool result = ReleaseRegion(address, request_size);
   USE(result);
   ASSERT(result);
-  address = VirtualAlloc(base, size, MEM_RESERVE, PAGE_NOACCESS);
+  //address = VirtualAlloc(base, size, MEM_RESERVE, PAGE_NOACCESS); (saary)
+  address = VirtualAlloc(base, size, MEM_RESERVE, PAGE_EXECUTE_READWRITE);
   if (address != NULL) {
     request_size = size;
     ASSERT(base == static_cast<Address>(address));
@@ -1586,7 +1587,8 @@ bool VirtualMemory::Uncommit(void* address, size_t size) {
 
 
 void* VirtualMemory::ReserveRegion(size_t size) {
-  return RandomizedVirtualAlloc(size, MEM_RESERVE, PAGE_NOACCESS);
+  //return RandomizedVirtualAlloc(size, MEM_RESERVE, PAGE_NOACCESS); |(saary)
+  return RandomizedVirtualAlloc(size, MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 }
 
 

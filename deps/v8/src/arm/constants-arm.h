@@ -33,10 +33,19 @@
 #error ARM EABI support is required.
 #endif
 
+#if defined(_M_ARM) // (saary)
+#define __ARM_ARCH_7A__ 1
+#endif
+
+#if defined(_M_ARMT) // (saary)
+#define __THUMB_INTERWORK__ 1
+#endif
+
+
 // This means that interwork-compatible jump instructions are generated.  We
 // want to generate them on the simulator too so it makes snapshots that can
 // be used on real hardware.
-#if defined(__THUMB_INTERWORK__) || !defined(__arm__)
+#if defined(__THUMB_INTERWORK__) || !(defined(__arm__) || defined(_M_ARM))
 # define USE_THUMB_INTERWORK 1
 #endif
 

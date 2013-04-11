@@ -53,7 +53,7 @@ MacroAssembler::MacroAssembler(Isolate* arg_isolate, void* buffer, int size)
 
 // We always generate arm code, never thumb code, even if V8 is compiled to
 // thumb, so we require inter-working support
-#if defined(__thumb__) && !defined(USE_THUMB_INTERWORK)
+#if (defined(__thumb__) || defined(_M_ARMT) ) && !defined(USE_THUMB_INTERWORK)
 #error "flag -mthumb-interwork missing"
 #endif
 
