@@ -136,6 +136,9 @@ namespace internal {
 #endif
 #endif
 
+// (saary)
+#define USE_SIMULATOR 1
+
 // Support for alternative bool type. This is only enabled if the code is
 // compiled with USE_MYBOOL defined. This catches some nasty type bugs.
 // For instance, 'bool b = "false";' results in b == true! This is a hidden

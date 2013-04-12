@@ -114,8 +114,14 @@ static Handle<Object> Invoke(bool is_construct,
     JSFunction* func = *function;
     Object* recv = *receiver;
     Object*** argv = reinterpret_cast<Object***>(args);
+#if defined(_M_ARM) && !defined(USE_SIMULATOR)
+	_disable();
+#endif
     value =
         CALL_GENERATED_CODE(stub_entry, function_entry, func, recv, argc, argv);
+#if defined(_M_ARM) && !defined(USE_SIMULATOR)
+	_enable();
+#endif
   }
 
 #ifdef VERIFY_HEAP
